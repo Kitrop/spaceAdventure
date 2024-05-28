@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Type_ship {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  Ships Ships[]
+}
+
+model Ships {
+  id          Int        @id @default(autoincrement())
+  name        String
+  hp          Int
+  damage      Int
+  multiplier  Int
+  type_ship   Type_ship? @relation(fields: [type_shipId], references: [id])
+  type_shipId Int?
+  lvl         Int
+  MyShips     MyShips[]
+}
+
+model MyShips {
+  id          Int      @id @default(autoincrement())
+  telegram_id BigInt
+  ship        Ships    @relation(fields: [shipId], references: [id])
+  shipId      Int      @default(1)
+  where       Planets? @relation(fields: [whereId], references: [id])
+  whereId     Int?
+}
+
+model Base {
+  id          Int             @id @default(autoincrement())
+  telegram_id BigInt          @unique
+  titan       Int
+  cooper      Int
+  gold        Int
+  aluminum    Int
+  iron        Int
+  planets     BaseOnPlanets[]
+  upgrades    Int[]
+}
+
+model Planets {
+  id      Int             @id @default(autoincrement())
+  name    String          @unique
+  lvl     Int
+  alien   Aliens?         @relation(fields: [alienId], references: [id])
+  alienId Int
+  image   Bytes
+  base    BaseOnPlanets[]
+  MyShips MyShips[]
+}
+
+model Aliens {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  hp      Int
+  damage  Int
+  Planets Planets[]
+}
+
+model BaseOnPlanets {
+  base     Base    @relation(fields: [baseId], references: [id])
+  baseId   Int
+  planet   Planets @relation(fields: [planetId], references: [id])
+  planetId Int
+
+  @@id([baseId, planetId])
+}
