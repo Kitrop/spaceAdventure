@@ -8,3 +8,9 @@ export const planetsButtons = () => {
   ])
 }
 
+
+export const backButtons = () => {
+  return Markup.inlineKeyboard([
+    {text: "Назад", callback_data: "back"}
+  ])
+}
